@@ -18,14 +18,15 @@ public class MainView extends VerticalLayout {
     public MainView() {
         setSpacing(false);
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
+        Image img = new Image("images/awesome.png", "awesome park");
+        img.setWidth("75%");
+        img.setMaxHeight("auto");
         add(img);
 
-        H2 header = new H2("This place intentionally left empty");
+        H2 header = new H2("Be awesome");
         header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
         add(header);
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(new Paragraph("скоро тут будет наикрутейшая круть 🤗"));
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

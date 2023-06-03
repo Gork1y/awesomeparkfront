@@ -8,34 +8,16 @@ import com.awesomepark.app.views.datagrid.DataGridView;
 import com.awesomepark.app.views.main.MainView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
-import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
-import com.vaadin.flow.theme.lumo.LumoUtility.Display;
-import com.vaadin.flow.theme.lumo.LumoUtility.FlexDirection;
-import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
-import com.vaadin.flow.theme.lumo.LumoUtility.FontWeight;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import com.vaadin.flow.theme.lumo.LumoUtility.Height;
-import com.vaadin.flow.theme.lumo.LumoUtility.ListStyleType;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
-import com.vaadin.flow.theme.lumo.LumoUtility.Overflow;
-import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
-import com.vaadin.flow.theme.lumo.LumoUtility.Whitespace;
-import com.vaadin.flow.theme.lumo.LumoUtility.Width;
+import com.vaadin.flow.theme.lumo.LumoUtility.*;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
+@PageTitle("Список бронирований")
 public class MainLayout extends AppLayout {
 
     /**
@@ -81,7 +63,7 @@ public class MainLayout extends AppLayout {
         Div layout = new Div();
         layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
 
-        H1 appName = new H1("AwesomeParkFront");
+        H1 appName = new H1("AwesomePark");
         appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
         layout.add(appName);
 
@@ -104,16 +86,16 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Main", LineAwesomeIcon.FILE.create(), MainView.class), //
+                new MenuItemInfo("Главная", LineAwesomeIcon.FILE.create(), MainView.class), //
 
-                new MenuItemInfo("Booking Form", LineAwesomeIcon.USER.create(), BookingFormView.class), //
+                new MenuItemInfo("Записаться", LineAwesomeIcon.USER.create(), BookingFormView.class), //
 
-                new MenuItemInfo("Data Grid", LineAwesomeIcon.COLUMNS_SOLID.create(), DataGridView.class), //
+                new MenuItemInfo("Таблица записи", LineAwesomeIcon.COLUMNS_SOLID.create(), DataGridView.class), //
 
-                new MenuItemInfo("Booking Admin Panel", LineAwesomeIcon.COLUMNS_SOLID.create(),
+                new MenuItemInfo("Админка", LineAwesomeIcon.COLUMNS_SOLID.create(),
                         BookingAdminPanelView.class), //
 
-                new MenuItemInfo("Contacts", LineAwesomeIcon.FILE.create(), ContactsView.class), //
+                new MenuItemInfo("Контакты", LineAwesomeIcon.FILE.create(), ContactsView.class), //
 
         };
     }

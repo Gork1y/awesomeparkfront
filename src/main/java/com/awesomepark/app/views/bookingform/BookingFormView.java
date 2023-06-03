@@ -1,126 +1,150 @@
 package com.awesomepark.app.views.bookingform;
 
-import com.awesomepark.app.data.entity.SamplePerson;
-import com.awesomepark.app.data.service.SamplePersonService;
+import com.awesomepark.app.dto.BookingRequestDto;
 import com.awesomepark.app.views.MainLayout;
-import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-@PageTitle("Booking Form")
-@Route(value = "Booking-form", layout = MainLayout.class)
-@Uses(Icon.class)
-public class BookingFormView extends Div {
+import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
 
-    private TextField firstName = new TextField("First name");
-    private TextField lastName = new TextField("Last name");
-    private EmailField email = new EmailField("Email address");
-    private DatePicker dateOfBirth = new DatePicker("Birthday");
-    private PhoneNumberField phone = new PhoneNumberField("Phone number");
-    private TextField occupation = new TextField("Occupation");
+@UIScope
+@Component
+@PageTitle("Записаться")
+@Route(value = "data-grid/:sampleAddressID?/:action?(edit)", layout = MainLayout.class)
+public class BookingFormView extends VerticalLayout {
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private final RestTemplate restTemplate;
+    private final TextField phone;
+    private final TextField name;
+    private final DateTimePicker timePicker;
+    private static final String BOOKING_API_URL = "http://localhost:80/api/public/booking";
+    private final Binder<BookingRequestDto> binder;
 
-    private Binder<SamplePerson> binder = new Binder<>(SamplePerson.class);
+    @Autowired
+    public BookingFormView(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
 
-    public BookingFormView(SamplePersonService personService) {
-        addClassName("booking-form-view");
+        Div container = new Div();
+        container.setClassName("form-container");
 
-        add(createTitle());
-        add(createFormLayout());
-        add(createButtonLayout());
+        phone = new TextField("Телефон");
+        name = new TextField("Имя");
+        timePicker = new DateTimePicker("Время записи");
 
-        binder.bindInstanceFields(this);
-        clearForm();
+        Button saveButton = new Button("Записаться на каталку");
+        saveButton.addClickListener(this::saveButtonClicked);
 
-        cancel.addClickListener(e -> clearForm());
-        save.addClickListener(e -> {
-            personService.update(binder.getBean());
-            Notification.show(binder.getBean().getClass().getSimpleName() + " details stored.");
-            clearForm();
-        });
-    }
-
-    private void clearForm() {
-        binder.setBean(new SamplePerson());
-    }
-
-    private Component createTitle() {
-        return new H3("Personal information");
-    }
-
-    private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        email.setErrorMessage("Please enter a valid email address");
-        formLayout.add(firstName, lastName, dateOfBirth, phone, email, occupation);
-        return formLayout;
+        formLayout.add(phone, name, timePicker, saveButton);
+
+        container.add(formLayout);
+
+        setAlignItems(FlexComponent.Alignment.CENTER);
+        add(container);
+
+        binder = new Binder<>(BookingRequestDto.class);
+        binder.bindInstanceFields(this);
+        setupValidation();
+        setupDateTimePicker();
     }
 
-    private Component createButtonLayout() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.addClassName("button-layout");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save);
-        buttonLayout.add(cancel);
-        return buttonLayout;
+    @PostConstruct
+    private void setupValidation() {
+        binder.forField(phone)
+                .asRequired("Телефон является обязательным полем")
+                .withValidator(new PhoneValidator("Неверный формат номера телефона"))
+                .bind(BookingRequestDto::getPhone, BookingRequestDto::setPhone);
+
+        binder.forField(name)
+                .asRequired("Имя является обязательным полем")
+                .bind(BookingRequestDto::getName, BookingRequestDto::setName);
+
+        binder.forField(timePicker)
+                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Выберите будущую дату и время")
+                .withValidator(dateTime -> dateTime.getHour() >= 10 && dateTime.getHour() < 21, "Доступное время для записи с 10:00 до 21:00")
+                .bind(BookingRequestDto::getTime, BookingRequestDto::setTime);
     }
 
-    private static class PhoneNumberField extends CustomField<String> {
-        private ComboBox<String> countryCode = new ComboBox<>();
-        private TextField number = new TextField();
+    private void setupDateTimePicker() {
+        timePicker.setLocale(new Locale("ru","RU"));
+        timePicker.setMin(LocalDate.now().atTime(0, 0, 0));
+        timePicker.setStep(Duration.ofMinutes(30));
+        DatePicker.DatePickerI18n russianI18n = new DatePicker.DatePickerI18n();
+        russianI18n.setMonthNames(List.of("Январь", "Февраль", "Март", "Апрель",
+                "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь",
+                "Ноябрь", "Декабрь"));
+        russianI18n.setWeekdays(List.of("Воскресенье", "Понедельник", "Вторник",
+                "Среда", "Четверг", "Пятница", "Суббота"));
+        russianI18n.setWeekdaysShort(
+                List.of("Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"));
+        russianI18n.setToday("Сегодня");
+        russianI18n.setCancel("Отмена");
+        timePicker.setDatePickerI18n(russianI18n);
+    }
+    private void clearFields() {
+        binder.removeBean();
+    }
 
-        public PhoneNumberField(String label) {
-            setLabel(label);
-            countryCode.setWidth("120px");
-            countryCode.setPlaceholder("Country");
-            countryCode.setAllowedCharPattern("[\\+\\d]");
-            countryCode.setItems("+354", "+91", "+62", "+98", "+964", "+353", "+44", "+972", "+39", "+225");
-            countryCode.addCustomValueSetListener(e -> countryCode.setValue(e.getDetail()));
-            number.setAllowedCharPattern("\\d");
-            HorizontalLayout layout = new HorizontalLayout(countryCode, number);
-            layout.setFlexGrow(1.0, number);
-            add(layout);
+    // Вспомогательный класс валидатора для номера телефона
+    private static class PhoneValidator extends com.vaadin.flow.data.validator.RegexpValidator {
+        public PhoneValidator(String errorMessage) {
+            super(errorMessage, "^[+]?[0-9]{10,13}$");
         }
+    }
 
-        @Override
-        protected String generateModelValue() {
-            if (countryCode.getValue() != null && number.getValue() != null) {
-                String s = countryCode.getValue() + " " + number.getValue();
-                return s;
-            }
-            return "";
-        }
+    private void saveButtonClicked(ClickEvent<Button> event) {
+        String phone = this.phone.getValue();
+        String name = this.name.getValue();
+        LocalDateTime time = timePicker.getValue();
 
-        @Override
-        protected void setPresentationValue(String phoneNumber) {
-            String[] parts = phoneNumber != null ? phoneNumber.split(" ", 2) : new String[0];
-            if (parts.length == 1) {
-                countryCode.clear();
-                number.setValue(parts[0]);
-            } else if (parts.length == 2) {
-                countryCode.setValue(parts[0]);
-                number.setValue(parts[1]);
+        BookingRequestDto bookingDto = new BookingRequestDto(phone, name, time);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<BookingRequestDto> requestEntity = new HttpEntity<>(bookingDto, headers);
+
+        try {
+            binder.writeBean(bookingDto);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    BOOKING_API_URL,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                Notification.show(responseEntity.getBody());
+                clearFields();
             } else {
-                countryCode.clear();
-                number.clear();
+                Notification.show("Ой, ошибка: " + responseEntity.getBody());
             }
+        } catch (ValidationException e) {
+            Notification.show("Проверьте правильность заполнения формы");
+        } catch (Exception e) {
+            Notification.show("Ой, ошибка: " + e.getMessage());
         }
     }
-
 }

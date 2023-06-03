@@ -1,6 +1,6 @@
 package com.awesomepark.app.data.service;
 
-import com.awesomepark.app.data.entity.SampleAddress;
+import com.awesomepark.app.data.entity.Booking;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +16,11 @@ public class SampleAddressService {
         this.repository = repository;
     }
 
-    public Optional<SampleAddress> get(Long id) {
+    public Optional<Booking> get(Long id) {
         return repository.findById(id);
     }
 
-    public SampleAddress update(SampleAddress entity) {
+    public Booking update(Booking entity) {
         return repository.save(entity);
     }
 
@@ -28,11 +28,11 @@ public class SampleAddressService {
         repository.deleteById(id);
     }
 
-    public Page<SampleAddress> list(Pageable pageable) {
+    public Page<Booking> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Page<SampleAddress> list(Pageable pageable, Specification<SampleAddress> filter) {
+    public Page<Booking> list(Pageable pageable, Specification<Booking> filter) {
         return repository.findAll(filter, pageable);
     }
 
