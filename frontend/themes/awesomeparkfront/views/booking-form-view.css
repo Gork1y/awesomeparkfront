@@ -1,44 +1,86 @@
+body {
+   background: linear-gradient(45deg, #3e4577, #000000, #57210a);
+}
 .booking-form-view {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  padding: 0 var(--lumo-space-l);
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    padding: 0 var(--lumo-space-l);
 }
+
+
+#vaadin-time-picker-item-0,
+#vaadin-time-picker-item-1,
+#vaadin-time-picker-item-2,
+#vaadin-time-picker-item-3,
+#vaadin-time-picker-item-4,
+#vaadin-time-picker-item-5,
+#vaadin-time-picker-item-6,
+#vaadin-time-picker-item-7,
+#vaadin-time-picker-item-8,
+#vaadin-time-picker-item-9,
+#vaadin-time-picker-item-10,
+#vaadin-time-picker-item-11,
+#vaadin-time-picker-item-12,
+#vaadin-time-picker-item-13,
+#vaadin-time-picker-item-14,
+#vaadin-time-picker-item-15,
+#vaadin-time-picker-item-16,
+#vaadin-time-picker-item-17,
+#vaadin-time-picker-item-18,
+#vaadin-time-picker-item-19,
+#vaadin-time-picker-item-43,
+#vaadin-time-picker-item-44,
+#vaadin-time-picker-item-45,
+#vaadin-time-picker-item-46,
+#vaadin-time-picker-item-47
+{
+    display: none;
+}
+.
 .booking-form-view .button-layout {
-  margin-bottom: var(--lumo-space-l);
-  margin-top: var(--lumo-space-m);
+    margin-bottom: 50px;
+    margin-top: var(--lumo-space-m);
 }
+
 .booking-form-view h3 {
-  margin-bottom: var(--lumo-space-s);
-  margin-top: var(--lumo-space-l);
+    margin-bottom: var(--lumo-space-s);
+    margin-top: var(--lumo-space-l);
+}
+.save-button {
+    margin-bottom: 20px
 }
 .form-container {
+    background: #212225;
+    border-radius: 20px;
 
-  margin-top: 12%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 600px;
+    margin-top: 12%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
 
-  width: 100%;
+    width: 100%;
 }
+
 .form-container {
 
-  width: 100%;
-  padding: 0 20px; /* Добавьте эту строку для создания отступов слева и справа */
-  box-sizing: border-box; /* Добавьте эту строку, чтобы ширина элементов включала в себя отступы */
+    width: 100%;
+    padding: 0 20px; /* Добавьте эту строку для создания отступов слева и справа */
+    box-sizing: border-box; /* Добавьте эту строку, чтобы ширина элементов включала в себя отступы */
 }
 
 .form-layout {
 
-  width: 100%; /* Добавьте эту строку, чтобы растянуть форму по ширине */
+    width: 100%; /* Добавьте эту строку, чтобы растянуть форму по ширине */
 }
 
 .form-layout .vaadin-form-layout-row {
-  width: 100%; /* Добавьте эту строку, чтобы растянуть строки формы по ширине */
+    width: 100%; /* Добавьте эту строку, чтобы растянуть строки формы по ширине */
 }
 
 .form-layout .vaadin-form-item {
-  flex-grow: 1; /* Добавьте эту строку, чтобы элементы формы растягивались максимально по ширине */
+    flex-grow: 1; /* Добавьте эту строку, чтобы элементы формы растягивались максимально по ширине */
 }
+

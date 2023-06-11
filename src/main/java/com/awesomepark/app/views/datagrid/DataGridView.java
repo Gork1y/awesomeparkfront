@@ -1,5 +1,6 @@
 package com.awesomepark.app.views.datagrid;
 
+import com.awesomepark.app.data.service.webclients.BookingFeignClient;
 import com.awesomepark.app.dto.BookingResponseDto;
 import com.awesomepark.app.views.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,23 +11,29 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 @PageTitle("Список бронирований")
-@Route(value = "bookings", layout = MainLayout.class)
+@Route(value = "data-grid", layout = MainLayout.class)
 @AnonymousAllowed
 @Component
 @UIScope
 @RequiredArgsConstructor
+@Scope(value = "vaadin-ui", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class DataGridView extends VerticalLayout {
-
-    public static final String API_PUBLIC_BOOKING = "http://localhost:80/api/public/booking";
     private Grid<BookingResponseDto> grid;
+    private final BookingFeignClient bookingClient;
+
 
     @PostConstruct
     public void init() {
@@ -39,10 +46,15 @@ public class DataGridView extends VerticalLayout {
 
     private void createGrid() {
         grid = new Grid<>(BookingResponseDto.class);
-        grid.setColumns("name", "phone");
+        grid.setColumns("name");
         grid.getColumnByKey("name").setHeader("Имя");
-        grid.getColumnByKey("phone").setHeader("Телефон");
-        grid.addColumn(dto -> dto.getTime().format(DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")))
+//        grid.getColumnByKey("phone").setHeader("Телефон");
+        grid.addColumn(booking -> {
+                    Instant time = booking.getTime();
+                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(time, ZoneId.systemDefault());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm").withLocale(new Locale("ru"));
+                    return zonedDateTime.format(formatter);
+                })
                 .setHeader("Время записи")
                 .setKey("time")
                 .setSortable(true)
@@ -62,21 +74,14 @@ public class DataGridView extends VerticalLayout {
     }
 
     private List<BookingResponseDto> getAllComments() {
+        ResponseEntity<List<BookingResponseDto>> responseEntity = bookingClient.getAllBookings();
+        List<BookingResponseDto> bookingResponseDtoList = responseEntity.getBody();
 
-        System.out.println("Fetching all Comment objects through REST..");
-
-        // Fetch from 3rd party API; configure fetch
-        WebClient.RequestHeadersSpec<?> spec = WebClient.create().
-                get().uri(API_PUBLIC_BOOKING);
-
-        // do fetch and map result
-        List<BookingResponseDto> bookingResponseDto = Objects.requireNonNull(spec.retrieve().
-                toEntityList(BookingResponseDto.class).block()).getBody();
-
-        assert bookingResponseDto != null;
-        System.out.printf("...received %d items.%n", bookingResponseDto.size());
-
-        return bookingResponseDto;
+        if (bookingResponseDtoList != null) {
+            System.out.printf("...received %d items.%n", bookingResponseDtoList.size());
+        } else {
+            System.out.println("...received no items.");
+        }
+        return bookingResponseDtoList;
     }
-
 }

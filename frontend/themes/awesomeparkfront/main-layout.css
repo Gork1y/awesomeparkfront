@@ -1,3 +1,20 @@
+h1 {
+  /* margin: 20px; */
+  font-family:  sans-serif;
+  color: #202020;
+  text-transform: uppercase;
+}
+
+h1  {
+  display: block;
+  margin: 11px 0 17px 0;
+  font-size: 80px;
+  line-height: 20px;
+  color: #130e0a;
+  text-shadow: 0 2px 8px #2e2f2f,0 -2px 1px #9acbda;
+  letter-spacing: 1px;
+}
+
 header nav a:any-link {
   text-decoration: none;
   padding: 0 var(--lumo-space-s);
@@ -23,4 +40,8 @@ header nav a[highlight] span {
 
 header nav a[highlight] {
   background-color: var(--lumo-primary-color-10pct);
+}
+.large-button {
+  width: 450px;
+  height: 50px;
 }

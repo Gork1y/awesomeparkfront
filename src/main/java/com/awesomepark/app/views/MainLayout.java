@@ -1,6 +1,7 @@
 package com.awesomepark.app.views;
 
 
+//import com.awesomepark.app.views.bookingadminpanel.BookingAdminPanelView;
 import com.awesomepark.app.views.bookingadminpanel.BookingAdminPanelView;
 import com.awesomepark.app.views.bookingform.BookingFormView;
 import com.awesomepark.app.views.contacts.ContactsView;
@@ -14,10 +15,8 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility.*;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
-@PageTitle("Список бронирований")
+
+@PageTitle("AwesomePark")
 public class MainLayout extends AppLayout {
 
     /**
@@ -62,10 +61,13 @@ public class MainLayout extends AppLayout {
 
         Div layout = new Div();
         layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
+        Div layout1 = new Div();
+        layout1.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
 
         H1 appName = new H1("AwesomePark");
-        appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
+        appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.XXXLARGE);
         layout.add(appName);
+
 
         Nav nav = new Nav();
         nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Horizontal.MEDIUM, Padding.Vertical.XSMALL);
@@ -86,16 +88,15 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Главная", LineAwesomeIcon.FILE.create(), MainView.class), //
+                new MenuItemInfo("Главная", LineAwesomeIcon.HOME_SOLID.create(), MainView.class), //
 
-                new MenuItemInfo("Записаться", LineAwesomeIcon.USER.create(), BookingFormView.class), //
+                new MenuItemInfo("Записаться", LineAwesomeIcon.USER_CHECK_SOLID.create(), BookingFormView.class), //
 
-                new MenuItemInfo("Таблица записи", LineAwesomeIcon.COLUMNS_SOLID.create(), DataGridView.class), //
+                new MenuItemInfo("Таблица записи", LineAwesomeIcon.TABLE_SOLID.create(), DataGridView.class), //
 
-                new MenuItemInfo("Админка", LineAwesomeIcon.COLUMNS_SOLID.create(),
-                        BookingAdminPanelView.class), //
+                new MenuItemInfo("Админка", LineAwesomeIcon.COG_SOLID.create(), BookingAdminPanelView.class), //
 
-                new MenuItemInfo("Контакты", LineAwesomeIcon.FILE.create(), ContactsView.class), //
+                new MenuItemInfo("Контакты", LineAwesomeIcon.MAP_MARKED_SOLID.create(), ContactsView.class), //
 
         };
     }
