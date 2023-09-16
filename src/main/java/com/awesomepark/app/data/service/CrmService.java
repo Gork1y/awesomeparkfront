@@ -20,12 +20,15 @@ public class CrmService {
     public void saveBooking(Booking booking) {
         if (booking == null) {
             System.err.println("Нихрена нету, проверь чтоб было не так");
-            return;
+            throw new NullPointerException("ничего нет");
         }
         BookingRequestDto dto = bookingToBookingRequestDto(booking);
-        bookingFeignClient.createOrUpdateBooking(dto);
+        if (dto.getTime() != null ) {
+            bookingFeignClient.createOrUpdateBooking(dto);
+        } else {
+            throw new NullPointerException("Пустое поле");
+        }
     }
-
 
 
     public List<Booking> findAllBookings(String stringFilter) {
@@ -37,7 +40,7 @@ public class CrmService {
             Booking booking = bookingResponseDtoToBooking(dto);
             bookings.add(booking);
         }
-            return bookings;
+        return bookings;
 //        } else {
 //            return contactRepository.search(stringFilter); todo : доделать поиск
 //        }
@@ -56,6 +59,7 @@ public class CrmService {
 
         return booking;
     }
+
     private BookingRequestDto bookingToBookingRequestDto(Booking booking) { //todo переделать на мапер
         BookingRequestDto requestDto = new BookingRequestDto();
         requestDto.setPhone(booking.getPhone());

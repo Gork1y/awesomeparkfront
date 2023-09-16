@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 @PageTitle("Список бронирований")
 @Route(value = "data-grid", layout = MainLayout.class)
@@ -51,8 +51,9 @@ public class DataGridView extends VerticalLayout {
 //        grid.getColumnByKey("phone").setHeader("Телефон");
         grid.addColumn(booking -> {
                     Instant time = booking.getTime();
-                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(time, ZoneId.systemDefault());
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm").withLocale(new Locale("ru"));
+                    String offset = String.valueOf(ZoneOffset.UTC);
+                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(time, ZoneId.of(offset));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm");
                     return zonedDateTime.format(formatter);
                 })
                 .setHeader("Время записи")

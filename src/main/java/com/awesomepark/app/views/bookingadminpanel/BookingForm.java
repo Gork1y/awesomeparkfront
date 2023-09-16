@@ -27,7 +27,7 @@ public class BookingForm extends FormLayout {
     Button delete = new Button("Удалить");
     Button close = new Button("Отмена");
 
-    Binder<Booking> binder = new BeanValidationBinder<>(Booking.class);
+    private final Binder<Booking> binder = new BeanValidationBinder<>(Booking.class);
 
     public BookingForm() {
         addClassName("contact-form");

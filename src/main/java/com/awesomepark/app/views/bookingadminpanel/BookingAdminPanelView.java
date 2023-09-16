@@ -19,7 +19,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @PageTitle("Админка")
 @SpringComponent
@@ -74,7 +73,7 @@ public class BookingAdminPanelView extends VerticalLayout {
         grid.addColumn(booking -> {
                     Instant time = booking.getTime();
                     ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(time, ZoneId.systemDefault());
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm").withLocale(new Locale("ru"));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm");
                     return zonedDateTime.format(formatter);
                 })
                 .setHeader("Время записи")
