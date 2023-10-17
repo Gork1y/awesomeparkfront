@@ -1,3 +1,4 @@
+![Awesome](src/main/resources/META-INF/resources/images/awesome.png)
 
 # Проект AwesomePark
 
