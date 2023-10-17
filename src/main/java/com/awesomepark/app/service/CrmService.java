@@ -1,20 +1,20 @@
-package com.awesomepark.app.data.service;
+package com.awesomepark.app.service;
 
 import com.awesomepark.app.data.entity.Booking;
-import com.awesomepark.app.data.service.webclients.BookingFeignClient;
 import com.awesomepark.app.dto.BookingRequestDto;
 import com.awesomepark.app.dto.BookingResponseDto;
+import com.awesomepark.app.mappers.BookingResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CrmService {
     private final BookingFeignClient bookingFeignClient;
+    private final BookingResponseMapper mapper;
 
 
     public void saveBooking(Booking booking) {
@@ -37,7 +37,7 @@ public class CrmService {
         List<Booking> bookings = new ArrayList<>();
         assert dtoList != null;
         for (BookingResponseDto dto : dtoList) {
-            Booking booking = bookingResponseDtoToBooking(dto);
+            Booking booking = mapper.mapToEntity(dto);
             bookings.add(booking);
         }
         return bookings;
@@ -47,26 +47,19 @@ public class CrmService {
     }
 
     public void deleteBooking(Booking booking) {
-        bookingFeignClient.deleteBooking(UUID.fromString(booking.getId()));
+        bookingFeignClient.deleteBooking(Long.valueOf(booking.getId()));
     }
 
-    private Booking bookingResponseDtoToBooking(BookingResponseDto dto) { //todo переделать на мапер
-        Booking booking = new Booking();
-        booking.setPhone(dto.getPhone());
-        booking.setName(dto.getName());
-        booking.setTime(dto.getTime());
-        booking.setId(String.valueOf(dto.getId()));
-
-        return booking;
-    }
 
     private BookingRequestDto bookingToBookingRequestDto(Booking booking) { //todo переделать на мапер
         BookingRequestDto requestDto = new BookingRequestDto();
+        requestDto.setId(booking.getId());
         requestDto.setPhone(booking.getPhone());
         requestDto.setName(booking.getName());
+        requestDto.setSurname(booking.getSurname());
         requestDto.setTime(booking.getTime());
-        requestDto.setId(String.valueOf(booking.getId()));
-
+        requestDto.setActivityId(booking.getActivityId());
+        requestDto.setActivityCount(booking.getActivityCount());
         return requestDto;
     }
 

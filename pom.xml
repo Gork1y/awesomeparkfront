@@ -47,7 +47,6 @@
 <!--        ______________________________________________________-->
         <dependency>
             <groupId>com.vaadin</groupId>
-            <!-- Replace artifactId with vaadin-core to use only free components -->
             <artifactId>vaadin</artifactId>
         </dependency>
         <dependency>
@@ -141,7 +140,7 @@
 
 
 
-        <!-- Зависимость для валидации номера телефона -->
+        <!-- валидация -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>

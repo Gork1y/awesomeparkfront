@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class BookingFormUtils {
 
-    public static void setupValidation(Binder<?> binder, TextField phone, TextField nameField) {
+    public static void setupValidation(Binder<?> binder, TextField phone, TextField nameField, TextField surnameField) {
         binder.forField(phone)
                 .asRequired("Телефон является обязательным полем")
                 .withValidator(new PhoneValidator("Неверный формат номера телефона"))
@@ -31,11 +31,22 @@ public class BookingFormUtils {
                 .withValidator(name -> name.replaceAll("\\D", "").length() <= 1,
                         "Имя не должно содержать более одной цифры")
                 .bind("name");
+
+        binder.forField(surnameField)
+                .asRequired("Фамилия является обязательным полем")
+                .withValidator(new StringLengthValidator(
+                        "Фамилия должна содержать минимум 2 символа",
+                        2, 20))
+                .withValidator(surname -> !surname.matches("\\d.*"),
+                        "Фамилия не должна начинаться с цифры")
+                .withValidator(surname -> surname.replaceAll("\\D", "").length() <= 1,
+                        "Фамилия не должна содержать более одной цифры")
+                .bind("surname");
     }
 
 
     public static void setupDateTimePicker(DateTimePicker timePicker) {
-        timePicker.setValue(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 00)));
+        timePicker.setValue(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
         timePicker.setMin(LocalDate.now().atTime(0, 0, 0));
         timePicker.setStep(Duration.ofMinutes(30));
         DatePicker.DatePickerI18n russianI18n = new DatePicker.DatePickerI18n();
