@@ -1,61 +1,83 @@
-# AwesomeParkFront
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+# Проект AwesomePark
 
-## Running the application
+**Проект AwesomePark** - это веб-приложение для управления бронированием активностей в вейк-парке развлечений. Приложение создано с использованием Java, Spring Boot и Vaadin.
 
-The project is a standard Maven project. To run it from the command line,
-type `mvnw` (Windows), or `./mvnw` (Mac & Linux), then open
-http://localhost:8080 in your browser.
+## Содержание
 
-You can also import the project to your IDE of choice as you would with any
-Maven project. Read more on [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/guide/step-by-step/importing) (Eclipse, IntelliJ IDEA, NetBeans, and VS Code).
+- [Описание проекта](#описание-проекта)
+- [Требования](#требования)
+- [Установка](#установка)
+- [Запуск проекта](#запуск-проекта)
+- [Использование](#использование)
+- [Авторы](#авторы)
+- [Лицензия](#лицензия)
 
-## Deploying to Production
+## Описание проекта
 
-To create a production build, call `mvnw clean package -Pproduction` (Windows),
-or `./mvnw clean package -Pproduction` (Mac & Linux).
-This will build a JAR file with all the dependencies and front-end resources,
-ready to be deployed. The file can be found in the `target` folder after the build completes.
+**Проект AwesomePark** представляет собой веб-приложение для управления бронированием активностей в парке развлечений. Пользователи могут создавать, редактировать и удалять бронирования для различных активностей. Приложение также предоставляет возможность фильтрации и поиска бронирований.
 
-Once the JAR file is built, you can run it using
-`java -jar target/awesomeparkfront-1.0-SNAPSHOT.jar`
+## Требования
 
-## Project structure
+Для запуска проекта необходимы следующие компоненты:
 
-- `MainLayout.java` in `src/main/java` contains the navigation setup (i.e., the
-  side/top bar and the main menu). This setup uses
-  [App Layout](https://vaadin.com/docs/components/app-layout).
-- `views` package in `src/main/java` contains the server-side Java views of your application.
-- `views` folder in `frontend/` contains the client-side JavaScript views of your application.
-- `themes` folder in `frontend/` contains the custom CSS styles.
+- Java Development Kit (JDK) версии 11 или выше
+- Сборка проекта: Apache Maven
+- База данных: MySQL или другая реляционная СУБД
 
-## Useful links
+## Установка
 
-- Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
-- Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
-- Create new projects at [start.vaadin.com](https://start.vaadin.com/).
-- Search UI components and their usage examples at [vaadin.com/docs/latest/components](https://vaadin.com/docs/latest/components).
-- View use case applications that demonstrate Vaadin capabilities at [vaadin.com/examples-and-demos](https://vaadin.com/examples-and-demos).
-- Build any UI without custom CSS by discovering Vaadin's set of [CSS utility classes](https://vaadin.com/docs/styling/lumo/utility-classes). 
-- Find a collection of solutions to common use cases at [cookbook.vaadin.com](https://cookbook.vaadin.com/).
-- Find add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Discord channel](https://discord.gg/MYFq5RTbBn).
-- Report issues, create pull requests in [GitHub](https://github.com/vaadin).
+1. Склонируйте репозиторий с помощью команды:
 
+   ```bash
+   git clone https://github.com/yourusername/awesomepark.git
+   ```
 
-## Deploying using Docker
+2. Перейдите в директорию проекта:
 
-To build the Dockerized version of the project, run
+   ```bash
+   cd awesomepark
+   ```
 
-```
-mvn clean package -Pproduction
-docker build . -t awesomeparkfront:latest
-```
+3. В корне проекта создайте файл `application.properties` для настройки подключения к базе данных. Пример настройки для MySQL:
 
-Once the Docker image is correctly built, you can test it locally using
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/awesomepark
+   spring.datasource.username=root
+   spring.datasource.password=rootpassword
+   spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+   ```
 
-```
-docker run -p 8080:8080 awesomeparkfront:latest
-```
+4. В файле `application.properties` также можно настроить другие параметры, такие как порт приложения и другие свойства Spring Boot.
+
+## Запуск проекта
+
+Для запуска проекта выполните следующие шаги:
+
+1. Соберите проект с помощью Maven:
+
+   ```bash
+   mvn clean install
+   ```
+
+2. Запустите проект с помощью Maven:
+
+   ```bash
+   mvn spring-boot:run
+   ```
+
+Приложение будет доступно по адресу `http://localhost:8080`.
+
+## Использование
+
+После успешного запуска проекта, вы можете войти в приложение и начать использовать его для управления бронированием активностей в парке развлечений.
+
+## Авторы
+
+Проект разработан командой **AwesomePark**. Вы можете связаться с нами по следующим адресам:
+
+- **Кирилл Gorkiy** - gorkiy@list.ru
+
+## Лицензия
+
+Этот проект лицензирован в соответствии с лицензией MIT. Подробности см. в файле [LICENSE](LICENSE).
