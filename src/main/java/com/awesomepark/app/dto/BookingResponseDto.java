@@ -4,17 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingResponseDto {
-    private UUID id;
+    private Long id;
     private String phone;
-
     private String name;
-
-    private Instant time;
+    private String surname;
+    private LocalDateTime time;
+    private Long activityId;
+    private Integer activityCount;
 }

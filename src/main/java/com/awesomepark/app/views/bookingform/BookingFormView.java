@@ -1,7 +1,7 @@
 package com.awesomepark.app.views.bookingform;
 
-import com.awesomepark.app.data.service.webclients.BookingFeignClient;
 import com.awesomepark.app.dto.BookingRequestDto;
+import com.awesomepark.app.service.BookingFeignClient;
 import com.awesomepark.app.views.MainLayout;
 import com.awesomepark.app.views.util.BookingFormUtils;
 import com.vaadin.flow.component.ClickEvent;
@@ -25,8 +25,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.LocalDateTime;
 
 import static com.awesomepark.app.views.util.BookingFormUtils.setupDateTimePicker;
 
@@ -42,6 +41,7 @@ public class BookingFormView extends VerticalLayout {
 
     TextField phone;
     TextField name;
+    TextField surname;
     DateTimePicker timePicker;
     Binder<BookingRequestDto> binder;
     private SimpMessagingTemplate messagingTemplate;
@@ -57,6 +57,7 @@ public class BookingFormView extends VerticalLayout {
 
         phone = new TextField("Телефон");
         name = new TextField("Имя");
+        surname = new TextField("Фамлия");
         timePicker = new DateTimePicker("Время записи");
 
         Button saveButton = new Button("Записаться на каталку");
@@ -64,7 +65,7 @@ public class BookingFormView extends VerticalLayout {
         saveButton.addClassName("save-button");
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(phone, name, timePicker, saveButton);
+        formLayout.add(phone, name,surname, timePicker, saveButton);
 
         container.add(formLayout);
 
@@ -73,7 +74,7 @@ public class BookingFormView extends VerticalLayout {
 
         binder = new Binder<>(BookingRequestDto.class);
         binder.bindInstanceFields(this);
-        BookingFormUtils.setupValidation(binder, phone, name);
+        BookingFormUtils.setupValidation(binder, phone, name, surname);
         setupDateTimePicker(timePicker);
     }
 
@@ -85,9 +86,10 @@ public class BookingFormView extends VerticalLayout {
     private void saveButtonClicked(ClickEvent<Button> event) {
         String phone = this.phone.getValue();
         String name = this.name.getValue();
-        Instant time = timePicker.getValue().toInstant(ZoneOffset.UTC);
+        String surname = this.surname.getValue();
+        LocalDateTime time = timePicker.getValue();
 
-        BookingRequestDto bookingDto = new BookingRequestDto(phone, name, time);
+        BookingRequestDto bookingDto = new BookingRequestDto(phone, name, surname, time,1L,1);
 
         try {
             binder.writeBean(bookingDto);
@@ -102,7 +104,7 @@ public class BookingFormView extends VerticalLayout {
             String responseBody = ex.getResponseBodyAsString();
             Notification.show("Ошибка при отправке запроса: " + responseBody);
         } catch (ValidationException ex) {
-            Notification.show("Некоректно введены данные!");
+            Notification.show("Некорректно введены данные!");
         } catch (Exception ex) {
             Notification.show("Произошла ошибка: " + ex.getMessage());
         }

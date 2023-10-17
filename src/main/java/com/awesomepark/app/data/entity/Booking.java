@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -19,6 +19,12 @@ public class Booking {
     @NotEmpty
     private String name;
     @NotEmpty
-    private Instant time;
+    private String surname;
+    @NotEmpty
+    private LocalDateTime time;
+    @NotEmpty
+    private Long activityId;
+    @NotEmpty
+    private Integer activityCount;
 
 }

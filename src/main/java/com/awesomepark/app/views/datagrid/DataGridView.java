@@ -1,7 +1,7 @@
 package com.awesomepark.app.views.datagrid;
 
-import com.awesomepark.app.data.service.webclients.BookingFeignClient;
 import com.awesomepark.app.dto.BookingResponseDto;
+import com.awesomepark.app.service.BookingFeignClient;
 import com.awesomepark.app.views.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,10 +16,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -50,11 +47,9 @@ public class DataGridView extends VerticalLayout {
         grid.getColumnByKey("name").setHeader("Имя");
 //        grid.getColumnByKey("phone").setHeader("Телефон");
         grid.addColumn(booking -> {
-                    Instant time = booking.getTime();
-                    String offset = String.valueOf(ZoneOffset.UTC);
-                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(time, ZoneId.of(offset));
+                    LocalDateTime time = booking.getTime();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM в HH:mm");
-                    return zonedDateTime.format(formatter);
+                    return time.format(formatter);
                 })
                 .setHeader("Время записи")
                 .setKey("time")
@@ -62,6 +57,24 @@ public class DataGridView extends VerticalLayout {
                 .setSortProperty("time");
 
         grid.setHeightFull();
+        grid.addColumn(booking -> {
+                    if (booking.getActivityId() == 1) {
+                        return "Вейкборд";
+                    } else if (booking.getActivityId() == 2) {
+                        return "Сап-борд";
+                    }
+                    return "Неизвестный тип услуги";
+                }).setHeader("Тип услуги")
+                .setKey("activityType")
+                .setSortable(true)
+                .setSortProperty("activityType");
+
+        grid.addColumn(booking -> booking.getActivityCount().toString())
+                .setHeader("Количество бронирований")
+                .setKey("bookingCount")
+                .setSortable(true)
+                .setSortProperty("bookingCount");
+
 
         add(grid);
     }
